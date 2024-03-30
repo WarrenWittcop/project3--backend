@@ -13,9 +13,23 @@ const createToken = (user) => {
 
 const verifyToken = (req, res, next) => {
     try {
+        const bearerHeader = req.headers["authorization"]
+        console.log(bearerHeader, "bearerHeader")
 
+        if(!bearerHeader) {
+            return res.status(403).json({message: "You don't have permission to use this."})
+        }
+
+        const decoded = jwt.verify(bearerHeader, JWT_SECRET)
+
+        if(!decoded){
+            return res.status(400)
+        }
+
+        next()
     } catch (err) {
         console.log(err)
+        return res.status(500).json({error: "Internal server error."})
     }
 }
 
