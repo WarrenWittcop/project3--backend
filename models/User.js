@@ -9,7 +9,6 @@ const {default: mongoose} = require("mongoose")
     password: {
         type: String,
         required: true,
-        unique: true
     },
     email: {
         type: String,

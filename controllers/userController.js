@@ -6,11 +6,12 @@ const signup = async (req, res) => {
     try {
         const {username, email, password} = req.body
 
-        const query = db.User.findOne({})
+        const query = db.User.find({})
 
         query.or([{username: username}, {email: email}])
 
         const foundUser = await query.exec()
+        console.log(foundUser)
 
         if(foundUser.length !== 0) {
             return res.status(400).json({message: "User already exists."})
