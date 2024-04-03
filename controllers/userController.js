@@ -1,88 +1,118 @@
-const db = require("../models")
-const bcrypt = require("bcrypt")
-const {createToken} = require("../middleware/verifyToken")
+const db = require("../models");
+const bcrypt = require("bcrypt");
+const { createToken } = require("../middleware/verifyToken");
+const { verifyToken } = require("../middleware/verifyToken");
 
+// Function to handle user signup
 const signup = async (req, res) => {
-    try {
-        const {username, email, password} = req.body
+  try {
+    const { username, email, password } = req.body;
 
-        const query = db.User.find({})
+    // Check if the username or email already exists in the database
+    const query = db.User.find({});
+    query.or([{ username: username }, { email: email }]);
+    const foundUser = await query.exec();
 
-        query.or([{username: username}, {email: email}])
-
-        const foundUser = await query.exec()
-        console.log(foundUser)
-
-        if(foundUser.length !== 0) {
-            return res.status(400).json({message: "User already exists."})
-        }
-
-        const salt = await bcrypt.genSalt(10)
-        const hash =  await bcrypt.hash(password, salt)
-
-        req.body.password = hash
-
-        const createdUser = await db.User.create(req.body)
-        await createdUser.save()
-        
-        return res.status(201).json({message: "User created.", userId: createdUser.id})
-    } catch (err) {
-        console.log(err)
-        return res.status(500).json({error: "Internal server error."})
+    if (foundUser.length !== 0) {
+      return res.status(400).json({ message: "User already exists." });
     }
-}
 
+    // Hash the password before saving it to the database
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
+
+    // Create a new user object with the hashed password
+    const newUser = new db.User({
+      username: username,
+      email: email,
+      password: hash
+    });
+
+    // Save the new user to the database
+    await newUser.save();
+
+    return res.status(201).json({ message: "User created.", userId: newUser.id });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+// Function to handle user login
 const login = async (req, res) => {
-    try {
-        const {username, email, password} = req.body
-        const query = db.User.find({})
+  try {
+    const { identifier, password } = req.body;
 
-        query.and([{username: username}, {email: email}])
-        const foundUser = await query.exec()
+    // Find the user by username or email
+    const foundUser = await db.User.findOne({
+      $or: [{ username: identifier }, { email: identifier }],
+    });
 
-        if(foundUser.length === 0) {
-            return res.status(400).json({message: "User not found."})
-        }
-
-        const verifyPassword = await bcrypt.compare(password, foundUser[0].password)
-
-        if(!verifyPassword) {
-            return res.status(400).json({message: "Incorrect password."})
-        }
-
-        const token = createToken(foundUser[0])
-        return res.status(200).json({token, id: foundUser[0]._id})
-
-    } catch (err) {
-        console.log(err)
-        return res.status(500).json({error: "Internal server error."})
+    if (!foundUser) {
+      return res.status(400).json({ message: "User not found." });
     }
-}
 
+    // Compare the provided password with the hashed password in the database
+    const verifyPassword = await bcrypt.compare(password, foundUser.password);
+
+    if (!verifyPassword) {
+      return res.status(400).json({ message: "Incorrect password." });
+    }
+
+
+
+    
+    // Create a JWT token for authentication
+    const token = createToken(foundUser);
+    return res.status(200).json({ token, id: foundUser._id });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+// Function to get user information by ID
 const getUser = async (req, res) => {
-    try {
-        const id = req.params.id
-        const query = db.User.findById(id)
+  try {
+    const id = req.params.id;
+    
+    const query = db.User.findById(id);
+    query.select("-password");
+    const foundUser = await query.exec();
 
-        query.select("-password")
-        const foundUser = await query.exec()
-
-        console.log(foundUser)
-
-        if(!foundUser) {
-            return res.status(400).json({message: "User not found."})
-        }
-        return res.status(200).json({message: "User found", data: foundUser})
-
-    } catch (err) {
-        console.log(err)
-        return res.status(500).json({error: "Internal server error."})
+    if (!foundUser) {
+      return res.status(400).json({ message: "User not found." });
     }
-}
+
+    return res.status(200).json({ message: "User found", data: foundUser });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+const updateUser = async (req, res) => {
+  try {
+      const id = req.params.id;
+      const updatedUserData = req.body;
+
+      // Find the user by ID and update their data
+      const updatedUser = await db.User.findByIdAndUpdate(id, updatedUserData, { new: true });
+
+      if (!updatedUser) {
+          return res.status(404).json({ message: "User not found." });
+      }
+
+      return res.status(200).json({ message: "User updated successfully", data: updatedUser });
+  } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Internal server error." });
+  }
+};
 
 module.exports = {
-    signup,
-    login,
-    getUser
-}
-
+  signup,
+  login,
+  getUser,
+  updateUser,
+};
