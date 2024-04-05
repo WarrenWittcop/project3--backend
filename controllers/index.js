@@ -7,6 +7,8 @@ router.post('/auth/signup', userCtrl.signup)
 
 // Login
 router.post('/auth/login', userCtrl.login);
+
+//Get and Save
 router.get('/user/:id', verifyToken, userCtrl.getUser);
 router.put('/user/:id', verifyToken, userCtrl.updateUser);
 
