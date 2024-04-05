@@ -19,7 +19,7 @@ app.use((req, res, next) => {
   });
 
 
-app.use("/api", routes)
+app.use("/", routes)
 
 // app.use((req, res, next) => {
 //     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');

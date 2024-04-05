@@ -8,7 +8,7 @@ router.post('/auth/signup', userCtrl.signup)
 // Login
 router.post('/auth/login', userCtrl.login);
 router.get('/user/:id', verifyToken, userCtrl.getUser);
-router.put('/users/:id', verifyToken, userCtrl.updateUser);
+router.put('/user/:id', verifyToken, userCtrl.updateUser);
 
 module.exports = router
 
