@@ -1,5 +1,34 @@
 const { default: mongoose } = require("mongoose");
 
+const exerciseSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    Duration: {
+        type: String,
+        required: true
+    },
+})
+
+const nutritionSchema = new mongoose.Schema({
+    food: {
+        type: String,
+        required: true
+    },
+    calories: {
+        type: Number,
+        required: true
+    },
+    totalCalories: {
+        type: Number,
+        required: true
+    },
+    calorieCalc: {
+        type: Number,
+        required: true
+    }
+})
 const userSchema = new mongoose.Schema({
   username: {
       type: String,
@@ -27,9 +56,14 @@ const userSchema = new mongoose.Schema({
   },
   imageLink: {
       type: String 
-  }
+  },
+
+    excerise: [exerciseSchema],
+    nutrition: [nutritionSchema]
 });
 
 const User = mongoose.model("User", userSchema);
+const Exersice = mongoose.model("Exercise", exerciseSchema);
+const Nutrition = mongoose.model("Nutrition", nutritionSchema);
 
-module.exports = User;
+module.exports = {User, Exersice, Nutrition}
