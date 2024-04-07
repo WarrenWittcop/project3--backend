@@ -13,10 +13,10 @@ app.use(express.urlencoded({extended: true}))
 app.use((req, res, next) => {
     const authHeader = req.headers['authorization'];
     if (authHeader) {
-      const token = authHeader.split(' ')[1];  
+      req.token = authHeader.split(' ')[1];  
     }
     next();
-  });
+});
 
 
 app.use("/", routes)
