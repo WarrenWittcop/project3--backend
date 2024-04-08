@@ -24,10 +24,6 @@ const nutritionSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    calorieCalc: {
-        type: Number,
-        required: true
-    }
 })
 
 const userSchema = new mongoose.Schema({
