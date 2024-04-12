@@ -1,5 +1,6 @@
-const db = require("../models");
+const db = require("../models/index.js");
 const bcrypt = require("bcrypt");
+const {User} = require("../models/User")
 const { createToken } = require("../middleware/verifyToken");
 const { verifyToken } = require("../middleware/verifyToken");
 
@@ -44,7 +45,7 @@ const login = async (req, res) => {
     const { identifier, password } = req.body;
 
     // Find the user by username or email
-    const foundUser = await db.User.findOne({
+    const foundUser = await User.findOne({
       $or: [{ username: identifier }, { email: identifier }],
     });
 
@@ -75,10 +76,12 @@ const login = async (req, res) => {
 const getUser = async (req, res) => {
   try {
     const id = req.params.id;
-    
-    const query = db.User.findById(id);
-    query.select("-password");
-    const foundUser = await query.exec();
+    console.log("Fetching details for user ID:", id);
+
+    // Find the user by ID and exclude the password field
+    const foundUser = await User.findById(id).select("-password");
+    // query.select("-password");
+    // const foundUser = await query.exec();
 
     if (!foundUser) {
       return res.status(400).json({ message: "User not found." });
@@ -97,7 +100,7 @@ const updateUser = async (req, res) => {
       const updatedUserData = req.body;
 
       // Find the user by ID and update their data
-      const updatedUser = await db.User.findByIdAndUpdate(id, updatedUserData, { new: true });
+      const updatedUser = await User.findByIdAndUpdate(id, updatedUserData, { new: true });
 
       if (!updatedUser) {
           return res.status(404).json({ message: "User not found." });

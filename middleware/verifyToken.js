@@ -20,6 +20,7 @@ const verifyToken = (req, res, next) => {
             return res.status(403).json({message: "You don't have permission to use this."})
         }
 
+        // deciding whether to use this code or not 
         const bearer = bearerHeader.split(" ")[1]
 
         const decoded = jwt.verify(bearerHeader, JWT_SECRET)

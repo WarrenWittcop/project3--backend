@@ -24,11 +24,8 @@ const nutritionSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    calorieCalc: {
-        type: Number,
-        required: true
-    }
 })
+
 const userSchema = new mongoose.Schema({
   username: {
       type: String,
@@ -63,7 +60,7 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model("User", userSchema);
-const Exersice = mongoose.model("Exercise", exerciseSchema);
+const Exercise = mongoose.model("Exercise", exerciseSchema);
 const Nutrition = mongoose.model("Nutrition", nutritionSchema);
 
-module.exports = {User, Exersice, Nutrition}
+module.exports = {User, Exercise, Nutrition}
