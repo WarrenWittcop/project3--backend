@@ -12,5 +12,14 @@ router.post('/auth/login', userCtrl.login);
 router.get('/user/:id', verifyToken, userCtrl.getUser);
 router.put('/user/:id', verifyToken, userCtrl.updateUser);
 
+//Delete
+router.delete('/user/:id', userCtrl.removeExercise);
+
+//Update Exercise
+router.put('/exercise/:id', userCtrl.updateExercise);
+
+//Post Exercise
+router.post('/exercise/:id', userCtrl.addExercise);
+
 module.exports = router
 

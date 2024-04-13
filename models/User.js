@@ -5,7 +5,7 @@ const exerciseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    Duration: {
+    duration: {
         type: String,
         required: true
     },
@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema({
       type: String 
   },
 
-    excerise: [exerciseSchema],
+    exercise: [exerciseSchema],
     nutrition: [nutritionSchema]
 });
 
