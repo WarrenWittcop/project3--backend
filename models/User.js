@@ -6,7 +6,7 @@ const exerciseSchema = new mongoose.Schema({
         required: true
     },
     duration: {
-        type: String,
+        type: Number,
         required: true
     },
 })
@@ -53,6 +53,12 @@ const userSchema = new mongoose.Schema({
   },
   imageLink: {
       type: String 
+  },
+  bio: {
+    type: String
+  },
+  goals: {
+    type: String
   },
 
     exercise: [exerciseSchema],
