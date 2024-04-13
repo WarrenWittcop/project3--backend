@@ -119,13 +119,13 @@ const addExercise = async (req, res) => {
   const exerciseData = req.body; // Assuming this contains the exercise details like name and duration
   console.log("Adding exercise for user ID:", userId, exerciseData)
   try {
-      const user = await User.findById(userId);
+      const user = await User.findByIdAndUpdate(userId, {$push: {exercise: exerciseData}}, { new: true });
       if (!user) {
           return res.status(404).json({ message: "User not found." });
       }
 
-      user.exercise.push(exerciseData[0]);
-      await user.save();
+      // user.exercise.push(exerciseData);
+      // await user.save();
       res.status(201).json({ message: "Exercise added successfully.", exercise: exerciseData });
   } catch (err) {
       console.error(err);
@@ -138,14 +138,14 @@ const removeExercise = async (req, res) => {
   const exerciseId = req.params.exerciseId;
 
   try {
-      const user = await User.findById(userId);
+      const user = await User.findByIdAndUpdate(userId, {$pull: {exercise: {_id: exerciseId}}}, { new: true });
       const exercise = user.exercise.id(exerciseId);
       if (!exercise) {
           return res.status(404).json({ message: "Exercise not found." });
       }
 
-      exercise.remove();
-      await user.save();
+      // exercise.remove();
+      // await user.save();
       res.status(200).json({ message: "Exercise removed successfully." });
   } catch (err) {
       console.error(err);
