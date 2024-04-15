@@ -16,7 +16,7 @@ router.put('/user/:id', verifyToken, userCtrl.updateUser);
 router.delete('/user/:userId/:exerciseId', userCtrl.removeExercise);
 
 //Update Exercise
-router.put('/exercise/:id', userCtrl.updateExercise);
+router.put('/user/:userId/exercise/:exerciseId', userCtrl.updateExercise);
 
 //Post Exercise
 router.post('/exercise/:id', userCtrl.addExercise);
