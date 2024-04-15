@@ -61,30 +61,8 @@ const userSchema = new mongoose.Schema({
     type: String
   },
 
-    exercise: [{
-        name: {
-            type: String,
-            required: true
-        },
-        duration: {
-            type: Number,
-            required: true
-        },
-    }],
-    nutrition: [{
-        food: {
-            type: String,
-            required: true
-        },
-        calories: {
-            type: Number,
-            required: true
-        },
-        totalCalories: {
-            type: Number,
-            required: true
-        },
-    }]
+    exercise: [exerciseSchema],
+    nutrition: [nutritionSchema],
 });
 
 const User = mongoose.model("User", userSchema);
